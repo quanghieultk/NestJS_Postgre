@@ -12,8 +12,8 @@ import { UserModule } from './user/user.module';
       username: 'postgres',
       password: 'traquangem123',
       database: 'postgres',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      entities: ["dist/**/*.entity{.ts,.js}"],
+      synchronize: false,
     })
     ,UserModule],
   controllers: [AppController],

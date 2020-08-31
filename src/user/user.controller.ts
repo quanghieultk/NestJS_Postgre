@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, HttpException, HttpStatus, ParseIntPipe, ParseUUIDPipe } from '@nestjs/common';
 import { UserService } from './user.service'
 import { User } from './user.entity'
 @Controller('user')
@@ -6,34 +6,39 @@ export class UserController {
     constructor(private readonly userService: UserService) {
 
     }
-    
-    @Get('/usera')
-    getu() {
-      return this.userService.findAll();
-    }
 
-    @Get()
-    findAll(): Promise<User[]> {
-      return this.userService.findAll()
+    @Get('')
+    getUsers() {
+      return this.userService.getAllUsers();
     }
   
     @Get(':id')
-    get(@Param() params) {
-        return this.userService.findOne(params.id);
+    getUser(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.userService.getUser(id);
       }
   
     @Post()
-    create(@Body() user: User) {
-      return this.userService.addUser(user);
+    createUser(@Body() user: User) {
+      // return this.userService.addUser(user);
+      return this.userService.addUser(user).then(function(res)
+      {
+        return {
+          "status": 200,
+          "message": "Create user successful"
+        }
+      })
+      .catch(function(){
+        throw new HttpException('NOT_ACCEPTABLE', HttpStatus.NOT_ACCEPTABLE);
+      })
     }
   
     @Put()
-    update(@Body() user: User) {
-      return this.userService.update(user);
+    updateUser(@Body() user: User) {
+      return this.userService.updateUser(user);
     }
   
     @Delete(':id')
-    deleteUser(@Param() params) {
-      return this.userService.delete(params.id);
+    deleteUser(@Param('id', new ParseUUIDPipe()) id: string) {
+      return this.userService.deleteUser(id);
     }
 }
